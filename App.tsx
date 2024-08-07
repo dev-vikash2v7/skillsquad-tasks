@@ -10,10 +10,9 @@ import OrderSuccess from './src/Screens/OrderSuccess';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Header from './src/Components/Header';
-import CustomTabIcon from './src/Components/CustomTabIcon';
 import { StyleSheet, Text } from 'react-native';
-import icons from './src/Constants/icons';
 import { COLORS } from './src/Constants/theme';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -71,8 +70,8 @@ const App = () => {
         options={{headerShown:false}} 
       /> */}
       
-      <Stack.Screen name="SignUp" component={SignUpScreen} options={{ headerShown: false }} />
       <Stack.Screen name="LogIn" component={LoginScreen} options={{ headerShown: false }}/>
+      <Stack.Screen name="SignUp" component={SignUpScreen} options={{ headerShown: false }} />
         </Stack.Navigator>
         )
     }
@@ -91,23 +90,25 @@ const App = () => {
         
         tabBarStyle:  
         {
-          "display": "flex",
-          "height" : 80 ,
+          // "display": "flex",
+          "height" : 45 ,
           "alignItems" : 'center',
           "marginBottom" : 4,
+          justifyContent:'center'
         },
       }}>
 
     
       <Tab.Screen
-        name="Home"
+        name="HomeTab"
         component={HomeStackNavigator}
         options={{
           tabBarIcon: ({ focused }) => (
-            <CustomTabIcon iconName={""}  focused={focused} />
+            // <CustomTabIcon iconName={""}  focused={focused} />
+            <></>
           ),
           tabBarLabel: ({ focused }) => (
-            <Text style={[styles.tabLabel, focused && styles.tabLabelFocused]}>
+            <Text style={[styles.tabLabel ,  focused && styles.tabLabelFocused]}>
               Home
             </Text>
           ),
@@ -120,7 +121,7 @@ const App = () => {
         component={VideoCallScreen}
         options={{
           tabBarIcon: ({ focused }) => (
-            <CustomTabIcon iconName={""} focused={focused} />
+            <></>
           ),
           tabBarLabel: ({ focused }) => (
             <Text style={[styles.tabLabel, focused && styles.tabLabelFocused]}>
@@ -135,7 +136,8 @@ const App = () => {
         component={PaymentScreen}
         options={{
           tabBarIcon: ({ focused }) => (
-            <CustomTabIcon iconName={""} focused={focused} />
+            <></>
+
           ),
           tabBarLabel: ({ focused }) => (
             <Text style={[styles.tabLabel, focused && styles.tabLabelFocused]}>
@@ -180,13 +182,13 @@ export default App;
 
 const styles = StyleSheet.create({
   tabLabel: {
-    color: 'black', // Set your desired text color
-    fontSize: 12, // Set your desired font size
-    fontWeight: 'bold', // Set font weight if needed
-    marginBottom : 4
+    color: 'black', 
+    fontSize: 15, 
+    fontWeight: 'bold', 
+    marginBottom : 10
   },
   tabLabelFocused: {
-    color: COLORS.primary, // Set the text color for the focused tab
+    color: COLORS.primary,
   },
   toast:{
  justifyContent :'center' ,
@@ -199,6 +201,5 @@ const styles = StyleSheet.create({
   },
   toastText : {
     fontSize : 16 , 
-    // fontWeight:'bold'
   }
 });

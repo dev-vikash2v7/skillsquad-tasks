@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet , Dimensions, ActivityIndicator } from 'react-native';
 import { moderateScale, scale, verticalScale } from 'react-native-size-matters';
 
-import {  fontSize } from '../../constants/theme'
+import {  fontSize } from '../Constants/theme'
 
 
 

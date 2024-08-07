@@ -216,9 +216,10 @@ const LogInScreen = ({navigation}) => {
                     >
                         <Text style={{
                             fontSize: 16,
-                            color: COLORS.secondary,
+                            color: COLORS.primary,
                             fontWeight: "bold",
-                            marginLeft: 6
+                            marginLeft: 6,
+                            
                         }}>Register</Text>
                     </Pressable>
                     </View>
@@ -248,7 +249,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     padding : 20,
-    backgroundColor : COLORS.background
+    backgroundColor : '#fff'
 },
 
 

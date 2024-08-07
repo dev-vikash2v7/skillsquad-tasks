@@ -1,14 +1,12 @@
 import {View, Text, Image} from 'react-native';
 import React,{useEffect} from 'react';
 import {useNavigation} from '@react-navigation/native';
-import { fontSize } from '../../constants/theme';
+import { fontSize } from '../Constants/theme';
 import { ScaledSheet } from 'react-native-size-matters';
-import { appIcons } from '../../constants/icons';
+import { Button } from 'react-native-paper';
 
-const OrderSuccess = ({route}) => {
-  const navigation = useNavigation();
+const OrderSuccess = ({route , navigation}) => {
 
-  const {orderDetails} = route.params
 
   useEffect(() => {
     navigation.getParent()?.setOptions({ tabBarStyle: { display: 'none' }, tabBarVisible: false });
@@ -22,19 +20,44 @@ const OrderSuccess = ({route}) => {
   });
 }, [navigation]);
 
+const {orderDetails} = route.params
+
+console.log(orderDetails)
+
+const {billingDetails} = orderDetails
+const {name , email , phone} = billingDetails
+
+
 
 
   return (
     <View style={styles.container}>
-      <Image source={appIcons.done} style={styles.icon} /> 
-      <Text style={styles.msg}>Order Placed Successfully...</Text>
-      <Text
+      {/* <Image source={appIcons.done} style={styles.icon} />  */}
+      <Text style={styles.msg}>Payment Successfull</Text>
+
+
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Order Summary</Text>
+        <Text style={{color:'#000'}}>Order ID: {orderDetails.id}</Text>
+        <Text style={{color:'#000'}}>Amount: {orderDetails.amount}</Text>
+        <Text style={{color:'#000'}}>Payment Status: {orderDetails.paymentStatus}</Text>
+      </View>
+
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Reciver Details</Text>
+        <Text style={{color:'#000'}}>{name}</Text>
+        <Text style={{color:'#000'}}>{email}</Text>
+        <Text style={{color:'#000'}}>{phone}</Text>
+      </View>
+      
+      
+      <Button
         style={styles.btn}
         onPress={() => {
-          navigation.navigate('OrderDetails' , {orderDetails});
+          navigation.navigate('Home' );
         }}>
-        View Order Details
-      </Text>
+        Go To Home Screen
+      </Button>
     </View>
   );
 };
@@ -47,22 +70,36 @@ const styles = ScaledSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    justifyContent: 'center',
-    alignItems: 'center',
+    paddingLeft:40
   },
-  icon: {
-    width: '100@s',
-    height: '100@vs',
-  },
+  
   msg: {
     marginTop: '20@vs',
-    fontSize: fontSize.regular,
-    color: '#000',
+    fontSize: fontSize.large,
+    color: 'green',
+    marginBottom:30
   },
   btn: {
-    padding: '10@ms',
+    padding: '5@ms',
     borderWidth: 1,
     color: '#000',
     marginTop: '20@vs',
+  borderBlockColor:'#000',
+  borderColor:'#000',
+  width:'250@ms',
+  alignSelf:'center',
+  marginRight:40
+  },
+  section: {
+    marginBottom: '20@vs',
+    color:'#000',
+
+  },
+  sectionTitle: {
+    fontWeight: 'bold',
+    fontSize: fontSize.large,
+    marginBottom: '10@vs',
+    color: '#000',
+
   },
 });

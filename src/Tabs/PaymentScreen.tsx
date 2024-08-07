@@ -19,7 +19,7 @@ function  PaymentScreen  ({navigation}) {
     const [loading , setLoading] = useState(false);
     const [showBtn , setShowBtn] = useState(false);
 
-
+    const [error, setError] = useState(null);
 
 
   const placeOrder = (paymentIntent : any) => {
@@ -42,17 +42,23 @@ function  PaymentScreen  ({navigation}) {
 
 
 
+  
 
 
 
     const fetchPaymentIntentClientSecret = async  ( ) => {
     
         try{
-      const res = await  fetch('https://shopping-hub-backend.vercel.app/create-payment-intent', {
+
+          // const stripe = await getStripe();
+
+      const res = await  fetch('https://8d6f-49-36-25-244.ngrok-free.app/create-payment-intent', {
+
+      // const res = await  fetch('https://skillsquad-tasks.vercel.app/create-payment-intent', {
         method : 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Accept': 'application/json'
+            'Accept': 'application/json',
           },
           body: JSON.stringify({
             amount: 1000 ,
@@ -61,14 +67,23 @@ function  PaymentScreen  ({navigation}) {
           }),} )
 
 
-      const { clientSecret  , error} = await res.json();
+      const result = await res.json();
+
+
+      if(!result){
+        throw Error('Error')
+      }
+
+     const { clientSecret  , error} = result
       return { clientSecret  , error} ;
         }
 
       catch(e){
           console.log( 'fetchPaymentIntentClientSecret Error : ' ,  e ) 
-          Alert.alert('Server Error '+ e.message)
+          // Alert.alert('Server Error ' )
+          setError(`Server Error: ${e.message}`);
           setLoading(false);
+          setShowBtn(true)
       }
     }
 
@@ -95,9 +110,9 @@ function  PaymentScreen  ({navigation}) {
             setShowBtn(false)
 
             const billingDetails = {
-                name : "vikash" ,
-                email : user.email,
-                phone: '+1234567890',
+                name : "vikash verma" ,
+                email :"vikashvermacom92@gmail.com",
+                phone: '+918817956935',
                 address: {
                   line1: 'room no 101',
                   line2: 'patel nagar',
@@ -109,8 +124,9 @@ function  PaymentScreen  ({navigation}) {
             const {clientSecret , error} = await  fetchPaymentIntentClientSecret();
 
             if(error || !clientSecret){
-                console.log('USER ERROR  : ' , error)
-                Alert.alert('Unable to process payment ! Try Again')
+                // Alert.alert('Unable to process payment ! Try Again')
+          setError(`Server Error: ${error.message}`);
+
                 setLoading(false)
                 setShowBtn(true)
                 return 
@@ -124,23 +140,28 @@ function  PaymentScreen  ({navigation}) {
               {
                 paymentMethodType: 'Card' ,
                 paymentMethodData: { 
-                  billingDetails: billingDetails 
+                  billingDetails: billingDetails ,
+                 
                 },
               });
 
                 if (error) {
                   console.log('PAYMENT ERROR : ' , error.message)
-                  Alert.alert(error?.localizedMessage);
+                  // Alert.alert(error?.localizedMessage);
+          setError(`Server Error: ${error.message}`);
+
                 } 
                 else if (paymentIntent) {
                    console.log(paymentIntent)
-                   Alert.alert(`Payment of INR ${amount}   is successful! `)
+                   Alert.alert(`Payment of INR ${1000}   is successful! `)
                    placeOrder(paymentIntent)
                 }
             }
             catch(e){
                 console.log(e.message)
-                Alert.alert('SERVER ERROR : ' +e.message)
+                // Alert.alert('SERVER ERROR : ' +e.message)
+                setError(`Server Error: ${e.message}`);
+                
             }
             setLoading(false)
             setShowBtn(true) 
@@ -153,6 +174,17 @@ function  PaymentScreen  ({navigation}) {
 
       <Text style={styles.title}> Enter Card Details</Text>
 
+
+      {error && (
+        <View style={styles.errorBox}>
+          <Text style={styles.errorText}>{error}</Text>
+        </View>
+      )}
+
+      <View style={styles.noteBox}>
+        <Text style={styles.noteText}>Please use any Indian credit card number. Example: 4000 0035 6000 0008</Text>
+      </View>
+
         <StripeProvider
         publishableKey="pk_test_51J5EHJSEzMLO0wLKuoQkQvHZDW5XE5xwQiSXP61XSBMfzmHNvLDnf9iU0Ba68wuh6nAldPxtld3ORd1P07BDzDsq00ndvDCXLX"
       >
@@ -160,6 +192,15 @@ function  PaymentScreen  ({navigation}) {
       postalCodeEnabled={false}
         
         style={styles.cardContainer}
+
+        cardStyle={{
+          textColor : 'white',
+          fontSize:15,
+          borderColor:'blue',
+          borderWidth:1,
+          backgroundColor :'black',
+          
+        }}
         
         onCardChange={(card) => {
           if(card.complete) setShowBtn(true)
@@ -177,7 +218,6 @@ function  PaymentScreen  ({navigation}) {
            loading={ loading}
            showBtn={ showBtn}
            marginTop={verticalScale(10)}
-           fontSize = {fontSize.regular}
 />
           </View>
     );
@@ -197,6 +237,7 @@ height : '300@vs'
   title:{
 fontSize:fontSize.large,
 fontWeight:'600', 
+color:'#000'
   },
 
       cardContainer :{
@@ -205,43 +246,29 @@ fontWeight:'600',
         borderWidth:1,
         marginTop : '10@vs',
         borderRadius:'10@ms',
-        padding:'10@ms',
-        color: 'black', // Customize text color
-        fontSize: fontSize.regular,   // Customize font size
-        placeholderColor: 'gray', // Customize placeholder color
-        borderColor: 'gray',
+       
+
+      },
+      noteBox: {
+        backgroundColor: '#e0f7fa',
+        padding: '10@ms',
+        borderRadius: '5@ms',
+        marginVertical: '10@vs'
+      },
+      noteText: {
+        color: '#00796b',
+        fontSize: fontSize.regular,
+      },
+      errorBox: {
+        backgroundColor: '#ffebee',
+        padding: '10@ms',
+        borderRadius: '5@ms',
+        marginVertical: '10@vs'
+      },
+      errorText: {
+        color: '#d32f2f',
+        fontSize: fontSize.regular,
       },
   
 })
 
-
-
-// {
-  // "amount": 2180,
-  //  "canceledAt": "0", 
-  //  "captureMethod": "Automatic", 
-  //  "clientSecret": "pi_3O67rfSEzMLO0wLK0siyj3Yt_secret_rhQIXFnPyLp9zLnB5mxX5v7WQ", 
-  //  "confirmationMethod": "Automatic", 
-  //  "created": "1698481647000", 
-  //  "currency": "inr", 
-  //  "description": null,
-  //   "id": "pi_3O67rfSEzMLO0wLK0siyj3Yt", 
-  //   "lastPaymentError": null,
-  //    "livemode": false, 
-  //    "nextAction": null, 
-  //    "paymentMethod": 
-  //         {"AuBecsDebit": 
-  //           {
-  //             "bsbNumber": null,
-  //           "fingerprint": null, "last4": null
-  //           }, 
-  //         "BacsDebit":
-  //          {"fingerprint": null, "last4": null, "sortCode": null},
-  //           "Card": {"availableNetworks": null, "brand": "Visa", "country": "US", "expMonth": 12, "expYear": 2024, "fingerprint": null, "funding": "credit", "last4": "4242", "preferredNetwork": null, "threeDSecureUsage": [Object]}, 
-  //           "Fpx": {"accountHolderType": null, "bank": null}, 
-  //           "Ideal": {"bankIdentifierCode": null, "bankName": null},
-  //            "SepaDebit": {"bankCode": null, "country": null, "fingerprint": null, "last4": null},
-  //             "Sofort": {"country": null},
-  //              "USBankAccount": {"accountHolderType": "Unknown", "accountType": "Unknown", "bankName": null, "fingerprint": null, "last4": null, "linkedAccount": null, "preferredNetworks": null, "routingNumber": null, "supportedNetworks": null}, 
-  //              "Upi": {"vpa": null}, 
-  //              "billingDetails": {"address": [Object], "email": "vk@gmail.com", "name": "vikash", "phone": "+1234567890"}, "customerId": null, "id": "pm_1O67rgSEzMLO0wLKCmWpP5Je", "livemode": false, "paymentMethodType": "Card"}, "paymentMethodId": "pm_1O67rgSEzMLO0wLKCmWpP5Je", "receiptEmail": null, "shipping": null, "status": "Succeeded"}

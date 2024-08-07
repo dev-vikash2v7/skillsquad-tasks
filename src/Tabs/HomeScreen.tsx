@@ -7,23 +7,22 @@ const HomeScreen = ({navigation}) => {
 
   const handleLogout = () => {
     auth().signOut();
-    navigation.navigate("LogIn")
+    navigation.replace("Auth")
   };
 
   return (
     <View style={styles.container}>
-      <Button title="Logout" onPress={handleLogout} />
+      <Button title="Logout" onPress={handleLogout}  color={'red'} />
 
-      <Text style={styles.text}>Welcome, {user.email}</Text>
+      <Text style={styles.text}>Welcome, {user?.email}</Text>
 
-      <Button title="Start Video Call" onPress={() => navigation.navigate('VideoCall')} />
 
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1,  alignSelf : 'center',},
+  container: { flex: 1,  alignSelf : 'center', paddingTop:20},
   text:{
     fontSize : 18,
     alignSelf : 'center',
