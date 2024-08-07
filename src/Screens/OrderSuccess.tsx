@@ -22,7 +22,6 @@ const OrderSuccess = ({route , navigation}) => {
 
 const {orderDetails} = route.params
 
-console.log(orderDetails)
 
 const {billingDetails} = orderDetails
 const {name , email , phone} = billingDetails
@@ -54,7 +53,7 @@ const {name , email , phone} = billingDetails
       <Button
         style={styles.btn}
         onPress={() => {
-          navigation.navigate('Home' );
+          navigation.replace('Home' );
         }}>
         Go To Home Screen
       </Button>

@@ -1,54 +1,26 @@
 import { View, Text, Image, Pressable, TextInput, TouchableOpacity, StyleSheet, ScrollView } from 'react-native'
 import React, { useState } from 'react'
-import { COLORS } from '../Constants/theme';
+import { COLORS, fontSize } from '../Constants/theme';
 
 import Button from '../Components/Button';
 
-// import { StackActions, useNavigation } from '@react-navigation/native';
-// import {useDispatch }  from 'react-redux'
-// import { collection,addDoc , query , getDocs , where} from "firebase/firestore";
-
-// import { setUser } from '../Redux/Slices/AuthSlice';
-// import Toast from 'react-native-toast-message';
 import { ActivityIndicator } from 'react-native-paper';
-import icons from '../Constants/icons';
 import auth from '@react-native-firebase/auth';
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { ScaledSheet } from 'react-native-size-matters';
 
 
 const Signup = ({navigation} ) => {
     const [isPasswordShown, setIsPasswordShown] = useState(false);
-    const [isChecked, setIsChecked] = useState(false);
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
-    const [address, setAddress] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [isSubmit , setIsSubmit] = useState(false)
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
 
-    // const navigation = useNavigation();
-
-    // const dispatch = useDispatch();
-
-
-
-
-    // const  registerUser = async ( data  )=>{
-      
-    //        try{
-
-    //     //    console.log({...data , id : docRef.id})
-
-    //         // dispatch(setUser({...data }))
-    //       }
-    //       catch (e) {
-    //         console.log('erere ' , e)
-    //         //   Toast.show({ type : 'error' , text1 : 'Signup Failed' ,text2 :  'Please Check Your Internet Connect and Try Again.' })
-    //         }
-    //   }
       
 
 
@@ -61,12 +33,12 @@ const Signup = ({navigation} ) => {
         const handleSignup = async() => {
 
           if (!name || !email || !password || !confirmPassword || !password ) {
-            setErrorMessage('Please fill in all fields');
+            setErrorMessage('Please fill all the fields !');
             return;
           }
       
           if (password !== confirmPassword) {
-            setErrorMessage('Passwords do not match');
+            setErrorMessage('Passwords did not match !');
             return;
           }
         setIsSubmit(true)
@@ -76,21 +48,34 @@ const Signup = ({navigation} ) => {
 
             await auth().createUserWithEmailAndPassword(email, password);
 
-            navigation.navigate('Home');
+            setErrorMessage('')
+            setEmail('')
+            setPassword('')
+            setConfirmPassword('')
+            setName('')
 
-            // if (querySnapshot.empty) {
-            //     registerUser({name,address ,  email, password})
+            navigation.navigate('MainTabs');
 
-            // }
             
-            // else {
-            // setErrorMessage('Email is Already Exists With Another Account')
-            // }
           }
           
           catch (error) {
-            console.log(error.message)
             setErrorMessage( error.message);
+
+            if(error.message.includes('already')){
+                setErrorMessage('Email address is already in use by another account ! Try with another id .');
+            }
+           else if(error.message.includes('badly')){
+                setErrorMessage('The email address is badly formatted.');
+            }
+           else if(error.message.includes('weak')){
+                setErrorMessage('Password should be at least 6 characters !');
+            }
+            else{
+                setErrorMessage(error.message);
+            }
+
+
           }
           setIsSubmit(false)
 
@@ -102,7 +87,7 @@ const Signup = ({navigation} ) => {
 
             <View style={{ flex: 1, marginHorizontal: 22 }}>
 
-                <View style={  { marginTop: 5 , marginBottom : 10 }}>
+                <View style={  { marginTop: 5 }}>
 
                     <View style = {{alignItems:'center' , flexDirection:'row',justifyContent :'space-between'}}>
 
@@ -110,8 +95,8 @@ const Signup = ({navigation} ) => {
 
                         fontSize: 22,
                         fontWeight: 'bold',
-                        marginVertical: 12,
-                        color: COLORS.black
+                        color: COLORS.black,
+                        marginTop:12
                     }}>
                         Create Account
                     </Text>
@@ -119,10 +104,7 @@ const Signup = ({navigation} ) => {
 
                     </View>
 
-                    <Text style={{
-                        fontSize: 16,
-                        color: COLORS.black
-                    }}>Connect with your friend today!</Text>
+                 
                 </View>
 
 
@@ -237,20 +219,23 @@ const Signup = ({navigation} ) => {
 
 
                 {errorMessage &&
-        <Text style={styles.errorMessage}>{errorMessage}</Text>
+
+<View style={styles.errorBox}>
+<Text style={styles.errorText}>{errorMessage}</Text>
+</View>
        }
 
       </View>
 
       {isSubmit ? 
- <ActivityIndicator size={30} color={COLORS.secondary} style ={{marginTop : 10}}/>
+ <ActivityIndicator size={30} color={COLORS.primary} style ={{marginTop : 10}}/>
 :
 
                 <Button
                     title="Sign Up"
                     filled
                     style={{
-                        marginTop: 18,
+                        marginTop: 40,
                         marginBottom: 4,
                         marginHorizontal : 20
                     }}
@@ -258,58 +243,14 @@ const Signup = ({navigation} ) => {
                 />
 
       }
-                {/* <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 20 }}>
-                    <View
-                        style={{
-                            flex: 1,
-                            height: 1,
-                            backgroundColor: COLORS.grey,
-                            marginHorizontal: 10
-                        }}
-                    />
-                    <Text style={{ fontSize: 14 }}>Or Sign up with</Text>
-                    <View
-                        style={{
-                            flex: 1,
-                            height: 1,
-                            backgroundColor: COLORS.grey,
-                            marginHorizontal: 10
-                        }}
-                    />
-                </View> */}
+              
 
                 <View style={{
                     flexDirection: 'row',
                     justifyContent: 'center'
                 }}>
                     
-{/* 
-                    <TouchableOpacity
-                        onPress={() => console.log("Pressed")}
-                        style={{
-                            flex: 1,
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            flexDirection: 'row',
-                            height: 52,
-                            borderWidth: 1,
-                            borderColor: COLORS.grey,
-                            marginRight: 4,
-                            borderRadius: 10
-                        }}
-                    >
-                        <Image
-                            source={icons.google}
-                            style={{
-                                height: 36,
-                                width: 36,
-                                marginRight: 8
-                            }}
-                            resizeMode='contain'
-                        />
 
-                        <Text>Google</Text>
-                    </TouchableOpacity> */}
                 </View>
 
                 <View style={{
@@ -317,15 +258,24 @@ const Signup = ({navigation} ) => {
                     justifyContent: "center",
                     marginVertical: 22
                 }}>
-                    <Text style={{ fontSize: 16, color: COLORS.black }}>Already have an account</Text>
+                    <Text style={{ fontSize: 16, color: COLORS.black }}>Already have an account ? </Text>
                     <Pressable
-                        onPress={() => navigation.navigate("LogIn")}
+                        onPress={() => {
+                            setErrorMessage('')
+                            setEmail('')
+                            setPassword('')
+                            setConfirmPassword('')
+                            setName('')
+                            navigation.navigate("LogIn")
+                        }}
                     >
                         <Text style={{
                             fontSize: 16,
-                            color: COLORS.secondary,
+                            color: COLORS.primary,
                             fontWeight: "bold",
-                            marginLeft: 6
+                            marginLeft: 6,
+                            textDecorationLine:'underline'
+
                         }}>Login</Text>
                     </Pressable>
             </View>
@@ -338,7 +288,7 @@ export default Signup;
 
 
 
-const styles = StyleSheet.create({
+const styles = ScaledSheet.create({
   container:{
       flex: 1,
        backgroundColor: COLORS.white 
@@ -375,6 +325,16 @@ label_text:{
     justifyContent: "center",
     paddingLeft: 22,
     flexDirection:'row'
-}
+},
+errorBox: {
+    backgroundColor: '#ffebee',
+    padding: '10@ms',
+    borderRadius: '5@ms',
+    marginVertical: '10@vs'
+  },
+  errorText: {
+    color: '#d32f2f',
+    fontSize: fontSize.regular,
+  },
 });
 

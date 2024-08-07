@@ -1,9 +1,17 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 import auth from '@react-native-firebase/auth';
 
 const HomeScreen = ({navigation}) => {
   const user = auth().currentUser;
+
+  useEffect(()=>{
+
+    if(!user?.email){
+      navigation.replace("Auth")
+
+    }
+  },[])
 
   const handleLogout = () => {
     auth().signOut();

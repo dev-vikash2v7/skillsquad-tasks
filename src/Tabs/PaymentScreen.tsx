@@ -50,11 +50,9 @@ function  PaymentScreen  ({navigation}) {
     
         try{
 
-          // const stripe = await getStripe();
+      // const res = await  fetch('https://8d6f-49-36-25-244.ngrok-free.app/create-payment-intent', {
 
-      const res = await  fetch('https://8d6f-49-36-25-244.ngrok-free.app/create-payment-intent', {
-
-      // const res = await  fetch('https://skillsquad-tasks.vercel.app/create-payment-intent', {
+      const res = await  fetch('https://skillsquad-tasks.vercel.app/create-payment-intent', {
         method : 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -217,7 +215,7 @@ function  PaymentScreen  ({navigation}) {
            color = 'white'
            loading={ loading}
            showBtn={ showBtn}
-           marginTop={verticalScale(10)}
+           marginTop={verticalScale(30)}
 />
           </View>
     );

@@ -5,7 +5,8 @@ import {
   TextInput,
   StyleSheet,
   Image,
-  TouchableOpacity,Pressable
+  TouchableOpacity,Pressable,
+  Alert
 } from 'react-native';
 
 
@@ -13,13 +14,14 @@ import { useDispatch } from 'react-redux';
 import { ActivityIndicator } from 'react-native-paper'; 
 // import { setUser } from '../Redux/Slices/AuthSlice';
 import Button from '../Components/Button';
-import { COLORS } from '../Constants/theme';
+import { COLORS, fontSize } from '../Constants/theme';
 import icons from '../Constants/icons';
 
 import auth from '@react-native-firebase/auth';
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { ScaledSheet } from 'react-native-size-matters';
 
 
 const LogInScreen = ({navigation}) => {
@@ -38,22 +40,40 @@ const LogInScreen = ({navigation}) => {
     setIsSubmit(true)
 
 
-    await auth().signInWithEmailAndPassword(email, password);
-    setEmail('')
-    setPassword('')
-    setIsSubmit(false)
-    setErrorMessage('')
-    navigation.navigate('Home');
+   const res =  await auth().signInWithEmailAndPassword(email, password);
 
+   console.log('res' , res)
+
+   if(res.user){
+
+       setEmail('')
+       setPassword('')
+       setIsSubmit(false)
+       setErrorMessage('')
+       Alert.alert('Successfully Loged in')
+       navigation.navigate('MainTabs');
+
+   }   
+   else{
+    setErrorMessage( 'Unable to login');
+
+   }
 
     }
     
     catch (e) {
         setIsSubmit(false)
-        console.log('error' )
-
+        console.log('error',e )
         
-        setErrorMessage(e.message);
+
+        if(e.message.includes('invalid')){
+            setErrorMessage('Incorrect email id or password !');
+
+        }
+        else{
+
+            setErrorMessage(e.message);
+        }
       }
   
 };
@@ -68,7 +88,7 @@ const LogInScreen = ({navigation}) => {
 
   const handleLogin = () => {
     if (!email || !password) {
-      setErrorMessage('Please enter both name and password');
+      setErrorMessage('Please enter both email address and password !');
       return;
     }
     checkCredentials({email,password})
@@ -80,12 +100,12 @@ const LogInScreen = ({navigation}) => {
     <View style={{ flex: 1, backgroundColor: COLORS.white }}>
             <View style={{ flex: 1, marginHorizontal: 22 }}>
 
-                <View style={{ marginVertical: 22 }}>
+                <View style={{ marginTop: 22 }}>
 
                     <Text style={{ 
                         fontSize: 22,
                         fontWeight: 'bold',
-                        marginVertical: 12,
+                        marginTop: 12,
                         color: COLORS.black
                     }}>
                         Hi Welcome Back ! 👋
@@ -93,12 +113,7 @@ const LogInScreen = ({navigation}) => {
                   
                         </Text>
 
-                    <Text style={{
-                        fontSize: 16,
-                        color: COLORS.black
-                    }}>Hello again you have been missed!
-                    
-                    </Text>
+                   
                 </View>
 
                 
@@ -162,12 +177,14 @@ const LogInScreen = ({navigation}) => {
                
 
                  {errorMessage &&
-                        <Text style={styles.errorMessage}>{errorMessage}</Text>
+                   <View style={styles.errorBox}>
+                   <Text style={styles.errorText}>{errorMessage}</Text>
+                   </View>
                 }
                     
 
                 {isSubmit ? 
- <ActivityIndicator size={30} color={COLORS.secondary} style ={{marginTop : 10}}/>
+ <ActivityIndicator size={30} color={COLORS.primary} style ={{marginTop : 10}}/>
 :
                 <Button
                     title="Login"
@@ -175,30 +192,14 @@ const LogInScreen = ({navigation}) => {
                     style={{ 
                         marginTop: 18,
                         marginBottom: 4,
+                   
                     }}
+                    
+                    
                     onPress = {handleLogin}
-                />
+                >
+                     </Button>
                 }
-{/* 
-                <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 20 }}>
-                    <View
-                        style={{
-                            flex: 1,
-                            height: 1,
-                            backgroundColor: COLORS.grey,
-                            marginHorizontal: 10
-                        }}
-                    />
-                    <Text style={{ fontSize: 14 }}>Or Login with</Text>
-                    <View
-                        style={{
-                            flex: 1,
-                            height: 1,
-                            backgroundColor: COLORS.grey,
-                            marginHorizontal: 10
-                        }}
-                    />
-                </View> */}
 
                
 
@@ -212,13 +213,19 @@ const LogInScreen = ({navigation}) => {
                     <Text style={{ fontSize: 16, color: COLORS.black }}>Don't have an account ? </Text>
 
                     <Pressable
-                        onPress={() => navigation.navigate("SignUp")}
+                        onPress={() => {
+                            setErrorMessage('')
+                            setEmail('')
+                            setPassword('')
+                            navigation.navigate("SignUp")
+                        }}
                     >
                         <Text style={{
                             fontSize: 16,
                             color: COLORS.primary,
                             fontWeight: "bold",
                             marginLeft: 6,
+                            textDecorationLine:'underline'
                             
                         }}>Register</Text>
                     </Pressable>
@@ -244,7 +251,7 @@ const LogInScreen = ({navigation}) => {
 
 export default LogInScreen
 
-const styles = StyleSheet.create({
+const styles = ScaledSheet.create({
   container:{
     flex: 1,
     alignItems: 'center',
@@ -292,7 +299,17 @@ input_box:{
     justifyContent: "center",
     paddingLeft: 22,
     flexDirection:'row'
-}
+},
+errorBox: {
+    backgroundColor: '#ffebee',
+    padding: '10@ms',
+    borderRadius: '5@ms',
+    marginVertical: '10@vs'
+  },
+  errorText: {
+    color: '#d32f2f',
+    fontSize: fontSize.regular,
+  },
 
 });
 
