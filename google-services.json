@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "781124396693",
+    "project_id": "skillsquadtask",
+    "storage_bucket": "skillsquadtask.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:781124396693:android:a2c9b1c26205b2eef15d9c",
+        "android_client_info": {
+          "package_name": "com.skillsquad"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAntS25PI9eB-zoVqavu4ByOiAiwjs6je4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
